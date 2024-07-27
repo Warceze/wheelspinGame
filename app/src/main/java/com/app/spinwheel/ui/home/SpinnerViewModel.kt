@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.app.spinwheel.R
 
-class HomeViewModel : ViewModel() {
+class SpinnerViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "What to eat tonight?"

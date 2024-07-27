@@ -12,15 +12,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.app.spinwheel.databinding.FragmentHomeBinding
+import com.app.spinwheel.databinding.SpinnerFragmentBinding
 import kotlin.random.Random
 
-class HomeFragment : Fragment() {
+class SpinnerFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: SpinnerFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var spinnerViewModel: SpinnerViewModel
 
     private var isSpinning = false
 
@@ -29,34 +29,34 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = SpinnerFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        spinnerViewModel = ViewModelProvider(this).get(SpinnerViewModel::class.java)
 
         val textViewTitle: TextView = binding.titleTextView
-        homeViewModel.text.observe(viewLifecycleOwner) {
+        spinnerViewModel.text.observe(viewLifecycleOwner) {
             textViewTitle.text = it
         }
 
         val questionText: TextView = binding.questionTextView
-        homeViewModel.questText.observe(viewLifecycleOwner) {
+        spinnerViewModel.questText.observe(viewLifecycleOwner) {
             questionText.text = it
         }
 
         val spinnerImage: ImageView = binding.spinnerImageView
-        homeViewModel.spinnerImage.observe(viewLifecycleOwner) {
+        spinnerViewModel.spinnerImage.observe(viewLifecycleOwner) {
             spinnerImage.setImageResource(it)
         }
 
         val rectangleWte: ImageView = binding.rectangleWhattoeat
-        homeViewModel.rectangleImage.observe(viewLifecycleOwner) {
+        spinnerViewModel.rectangleImage.observe(viewLifecycleOwner) {
             rectangleWte.setImageResource(it)
         }
 
         val resetButton: Button = binding.resetButton
         resetButton.setOnClickListener {
-            homeViewModel.resetValues()
+            spinnerViewModel.resetValues()
         }
 
         spinnerImage.setOnClickListener {
@@ -65,7 +65,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        homeViewModel.selectedSector.observe(viewLifecycleOwner) { sector ->
+        spinnerViewModel.selectedSector.observe(viewLifecycleOwner) { sector ->
             // Update UI with selected sector name
             sector?.let {
                 binding.questionTextView.text = it.name
@@ -84,7 +84,7 @@ class HomeFragment : Fragment() {
         isSpinning = true // Устанавливаем флаг, указывающий на то, что анимация в процессе
 
         // Получаем текущее значение угла вращения, либо используем 0, если значение отсутствует
-        val fromDegree = homeViewModel.rotationDegree.value ?: 0f
+        val fromDegree = spinnerViewModel.rotationDegree.value ?: 0f
 
         // Вычисляем конечный угол вращения, добавляя случайное значение от 0 до 360 и 720 для дополнительных оборотов
         val toDegree = fromDegree + (Random.nextFloat() * 360) + 720
@@ -107,10 +107,10 @@ class HomeFragment : Fragment() {
             override fun onAnimationEnd(animation: Animation?) {
                 // После завершения анимации определяем сектор, который находится в верхней части колеса
                 val degree = toDegree % 360
-                homeViewModel.updateRotationDegree(degree) // Сохраняем текущий угол вращения
+                spinnerViewModel.updateRotationDegree(degree) // Сохраняем текущий угол вращения
 
                 // Определяем сектор по текущему углу и обновляем ViewModel
-                homeViewModel.spinWheel(degree)
+                spinnerViewModel.spinWheel(degree)
 
                 isSpinning = false // Сбрасываем флаг вращения
             }
